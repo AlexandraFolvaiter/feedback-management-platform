@@ -1,0 +1,56 @@
+﻿@page "/feedback-forms/{Id}"
+@page "/manager-feedback-forms/{Id}"
+
+@using FeedbackManagementPlatform.Models.FeedbackForms
+@using FeedbackManagementPlatform.Services.Contracts
+
+@inject IFeedbackFormService FeedbackFormService;
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager _navManager
+
+<PageTitle>Feedback Forms</PageTitle>
+
+<div class="main-container">
+    <h1>Feedback sent for @feedbackForm.ToUserName on @feedbackForm.Date</h1>
+
+    <h3>Strengths:</h3>
+    <div>
+        @feedbackForm.Strengths
+    </div>
+
+    <h3>Improvements:</h3>
+    <div>
+        @feedbackForm.Strengths
+    </div>
+
+    <h3>Other:</h3>
+    <div>
+        @feedbackForm.Other
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; }
+
+    private FeedbackFormModel feedbackForm = new FeedbackFormModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userId = await GetCurrentUserId();
+        feedbackForm = await FeedbackFormService.GetFeedbackFormById(Guid.Parse(Id));
+    }
+
+    private async Task<Guid> GetCurrentUserId()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        var idClaim = user.Claims.FirstOrDefault(c => c.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value;
+
+        return user.Identity.IsAuthenticated
+            ? Guid.Parse(idClaim)
+            : Guid.Empty;
+    }
+}

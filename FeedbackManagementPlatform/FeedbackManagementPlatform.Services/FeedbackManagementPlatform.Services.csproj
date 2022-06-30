@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Identity.Web.MicrosoftGraph" Version="1.25.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FeedbackManagementPlatform.DataAccess\FeedbackManagementPlatform.DataAccess.csproj" />
+    <ProjectReference Include="..\FeedbackManagementPlatform.Models\FeedbackManagementPlatform.Models.csproj" />
+  </ItemGroup>
+
+</Project>

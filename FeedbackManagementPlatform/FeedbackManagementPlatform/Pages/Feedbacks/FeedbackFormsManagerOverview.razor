@@ -1,0 +1,61 @@
+﻿@page "/manager-feedback-forms"
+
+@using FeedbackManagementPlatform.Models.FeedbackForms
+@using FeedbackManagementPlatform.Services.Contracts
+
+@inject IFeedbackFormService FeedbackFormService;
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<PageTitle>Feedback Forms</PageTitle>
+
+
+
+<div class="main-container">
+    <h1>Feedback forms for assigned people</h1>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Feedback sent by</th>
+            <th>Feedback for</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var form in feedbackForms)
+        {
+            <tr>
+                <th>@form.FromUsername</th>
+                <td>@form.ToUserName</td>
+                <td>@form.Date</td>
+                <td><a href="feedback-forms/{@form.Id}">See feedback</a></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+</div>
+
+
+@code {
+    private IEnumerable<FeedbackFormModel> feedbackForms = new List<FeedbackFormModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userId = await GetCurrentUserId();
+        feedbackForms = await FeedbackFormService.GetAllFeedbackFormsAsManager(userId);
+    }
+
+    private async Task<Guid> GetCurrentUserId()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        var idClaim = user.Claims.FirstOrDefault(c => c.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value;
+
+        return user.Identity.IsAuthenticated
+            ? Guid.Parse(idClaim)
+            : Guid.Empty;
+    }
+}

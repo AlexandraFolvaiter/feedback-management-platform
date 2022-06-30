@@ -1,0 +1,58 @@
+﻿@page "/"
+@using FeedbackManagementPlatform.Models
+@using FeedbackManagementPlatform.Services.Contracts
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IUserService UserService
+
+<PageTitle>Account details</PageTitle>
+<div class="main-container">
+    <h3>Welcome, @username</h3>
+
+        <a type="button" class="btn btn-primary" href="feedback-forms"> Go to sent feedback forms</a>
+        <a type="button" class="btn btn-primary" href="manager-feedback-forms"> Go to your team's feedback forms'</a>
+    <div>
+        Manager to:
+        @if (managerToUsers.Any())
+        {
+            <ul>
+                @foreach(var user in managerToUsers)
+                {
+                    <li>@user.DisplayName - @user.Email</li>
+                }
+            </ul>
+        }
+        else
+        {
+            <div> No users </div>
+        }
+
+    </div>
+</div>
+
+@code
+{
+    private string? username;
+    private Guid currentUserId;
+    private IEnumerable<UserModel> managerToUsers = new List<UserModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetClaimsPrincipalData();
+        managerToUsers = await UserService.GetAllUsersByManager(currentUserId);
+    }
+
+    private async Task GetClaimsPrincipalData()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            username = user.Claims.FirstOrDefault(c => c.Type == "name")?.Value;
+
+            var idClaim = user.Claims.FirstOrDefault(c => c.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value;
+
+            currentUserId = Guid.Parse(idClaim);
+        }
+    }
+}

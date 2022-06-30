@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Pages\Feedbacks\FeedbackFormDetails.razor.css" />
+    <None Remove="Pages\Feedbacks\FeedbackFormsManagerOverview.razor.css" />
+    <None Remove="Pages\Feedbacks\FeedbackFormsOverview.razor.css" />
+    <None Remove="Pages\Index.razor.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Pages\Feedbacks\FeedbackFormDetails.razor.css" />
+    <Content Include="Pages\Feedbacks\FeedbackFormsManagerOverview.razor.css" />
+    <Content Include="Pages\Feedbacks\FeedbackFormsOverview.razor.css" />
+    <Content Include="Pages\Index.razor.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.6" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="1.25.1" />
+    <PackageReference Include="Microsoft.Identity.Web.MicrosoftGraph" Version="1.25.1" />
+    <PackageReference Include="Microsoft.Identity.Web.UI" Version="1.25.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FeedbackManagementPlatform.DataAccess\FeedbackManagementPlatform.DataAccess.csproj" />
+    <ProjectReference Include="..\FeedbackManagementPlatform.Models\FeedbackManagementPlatform.Models.csproj" />
+    <ProjectReference Include="..\FeedbackManagementPlatform.Services\FeedbackManagementPlatform.Services.csproj" />
+  </ItemGroup>
+
+</Project>

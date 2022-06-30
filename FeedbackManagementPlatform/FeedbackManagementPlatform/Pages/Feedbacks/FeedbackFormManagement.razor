@@ -1,0 +1,82 @@
+﻿@page "/feedback-forms/create"
+@using FeedbackManagementPlatform.Services.Contracts
+@using Microsoft.AspNetCore.Components
+@using FeedbackManagementPlatform.Models.FeedbackForms
+@using FeedbackManagementPlatform.Models
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IUserService UserService
+@inject IFeedbackFormService FeedbackFormService
+@inject NavigationManager _navManager
+
+<PageTitle>Create Feedback Form</PageTitle>
+<div class="form-container">
+    <h1>Create Feedback Form</h1>
+
+    <EditForm Model="@feedbackForm" OnValidSubmit="@SendFeedbackForm" class="column">
+        <div class="form-field">
+            <label class="control-label">From: </label>
+            @currentUsername
+        </div>
+        <div class="form-field">
+            <label class="control-label">To: </label>
+            <InputSelect class="form-control form-select-lg mb-3" id="to-id" @bind-Value="feedbackForm.ToId">
+                <option value="@Guid.Empty">Select classification ...</option>
+
+                @foreach (var user in users)
+                {
+                    <option value="@user.Id">@user.DisplayName || @user.Email</option>
+                }
+            </InputSelect>
+        </div>
+        <div class="form-field">
+            <label class="control-label">Strengths: </label>
+            <InputTextArea class="form-control" id="strengths" @bind-Value="feedbackForm.Strengths" style="height: 200px"/>
+        </div>
+        <div class="form-field">
+            <label class="control-label">Improvements: </label>
+            <InputTextArea class="form-control" id="improvements" @bind-Value="feedbackForm.Improvements" style="height: 200px"/>
+        </div>
+        <div class="form-field">
+            <label class="control-label">Other relevant feedback: </label>
+            <InputTextArea class="form-control" id="other" @bind-Value="feedbackForm.Other" style="height: 100px" />
+        </div>
+
+        <button class="btn btn-primary" type="submit">Send feedback</button>
+    </EditForm>
+</div>
+
+
+@code {
+    private FeedbackFormCreateModel feedbackForm = new FeedbackFormCreateModel();
+    private IEnumerable<UserModel> users = new List<UserModel>();
+    private Guid currentUserId;
+    private string currentUsername;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetCurrentUserDetails();
+        users = (await UserService.GetAllUsers()).Where(u => u.Id != currentUserId).ToList();
+    }
+
+    void SendFeedbackForm()
+    {
+        feedbackForm.FromId = currentUserId;
+        FeedbackFormService.SaveFeedbackForm(feedbackForm);
+        _navManager.NavigateTo("/feedback-forms");
+    }
+
+    private async Task GetCurrentUserDetails()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var idClaim = user.Claims.FirstOrDefault(c => c.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value;
+
+            currentUserId = Guid.Parse(idClaim);
+            currentUsername = user.Claims.FirstOrDefault(c => c.Type == "name")?.Value;
+        }
+    }
+}
