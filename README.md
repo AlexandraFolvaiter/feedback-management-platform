@@ -7,7 +7,7 @@ The project has as scope to demonstrate how an organization can make use of feat
 
 Based on the Microsoft Identity Platform, the application uses the MSLA to authenticate based on the user’s credentials, the Microsoft Graph to get data regarding employees,  and gives to the employee the opportunity to create and send feedback to his colleagues. In the case of a manager, he can see and analyze the feedback for his team.
 
-How we built it
+## Implementation details
 The application was built using .Net 6.0 Blazor Server App.
 
 Microsoft Identity features used:
@@ -33,5 +33,6 @@ Steps
 3. Run the application
 
 ## Links
-[Here](https://feedbackmanagementplatform.azurewebsites.net) is a link to the application
-[Here](https://youtu.be/LopuA8Reb9c) is a link to the demo
+[Here](https://feedbackmanagementplatform.azurewebsites.net) is a link to the application.
+
+[Here](https://youtu.be/LopuA8Reb9c) is a link to the demo.
